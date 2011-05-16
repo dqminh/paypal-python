@@ -1,5 +1,5 @@
 # coding=utf-8
-from paypal.interface import PayPalInterface
+from paypal.interface import PayPalInterface, AdaptivePaypalInterface
 from paypal.settings import PayPalConfig
 from paypal.exceptions import PayPalError, PayPalConfigError, PayPalAPIResponseError
 import paypal.countries

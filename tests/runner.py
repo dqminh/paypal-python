@@ -13,9 +13,11 @@ import unittest
 import t_direct_payment
 import t_express_checkout
 import t_countries
+import t_adaptive_payment
 
 # A list of the modules under the tests package that should be ran.
-test_modules = [t_direct_payment, t_express_checkout, t_countries]
+test_modules = [t_direct_payment, t_express_checkout, t_countries,
+                t_adaptive_payment]
 
 # Fire off all of the tests.
 for mod in test_modules:

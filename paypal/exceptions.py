@@ -18,19 +18,19 @@ class PayPalError(Exception):
             return "%s (Error Code: %s)" % (repr(self.message), self.error_code)
         else:
             return repr(self.message)
-        
-    def _get_message(self): 
+
+    def _get_message(self):
         """
         get the message from error
         """
         return self._message
 
-    def _set_message(self, message): 
+    def _set_message(self, message):
         """
         set the message from error
         """
         self._message = message
-        
+
     message = property(_get_message, _set_message)
 
 
@@ -44,7 +44,7 @@ class PayPalConfigError(PayPalError):
 class PayPalAPIResponseError(PayPalError):
     """
     Raised when there is an error coming back with a PayPal NVP API response.
-    
+
     Pipe the error message from the API to the exception, along with
     the error code.
     """

@@ -17,7 +17,7 @@ class PayPalConfig(object):
     # Used to validate correct values for certain config directives.
     _valid_= {
         'API_ENVIRONMENT' : ['sandbox','production'],
-        'API_AUTHENTICATION_MODE' : ['3TOKEN','CERTIFICATE'],
+        'API_AUTHENTICATION_MODE' : ['3TOKEN','CERTIFICATE', 'ADAPTIVE'],
     }
 
     # Various API servers.
@@ -54,6 +54,7 @@ class PayPalConfig(object):
     # Adaptive application credentials
     APPLICATION_ID = ""
     EMAIL = ""
+    DEVICE_IPADDRESS = ""
 
     # API Endpoints are just API server addresses.
     API_ENDPOINT = None
@@ -88,6 +89,8 @@ class PayPalConfig(object):
         are applied for certain directives in the absence of
         user-provided values.
         """
+        self.APPLICATION_ID = kwargs.get('APPLICATION_ID', self.APPLICATION_ID)
+
         if 'API_ENVIRONMENT' not in kwargs:
             kwargs['API_ENVIRONMENT']= self.API_ENVIRONMENT
         # Make sure the environment is one of the acceptable values.
@@ -101,13 +104,14 @@ class PayPalConfig(object):
         if kwargs['API_AUTHENTICATION_MODE'] not in self._valid_['API_AUTHENTICATION_MODE']:
             raise PayPalConfigError("Not a supported auth mode. Use one of: %s" % \
                            ", ".join(self._valid_['API_AUTHENTICATION_MODE']))
+        self.API_AUTHENTICATION_MODE = kwargs['API_AUTHENTICATION_MODE']
 
         # Set the API endpoints, which is a cheesy way of saying API servers.
         self.API_ENDPOINT= self._API_ENDPOINTS[self.API_AUTHENTICATION_MODE][self.API_ENVIRONMENT]
         self.PAYPAL_URL_BASE= self._PAYPAL_URL_BASE[self.API_ENVIRONMENT]
 
         # set the 3TOKEN required fields
-        if self.API_AUTHENTICATION_MODE == '3TOKEN':
+        if self.API_AUTHENTICATION_MODE in ['3TOKEN', 'ADAPTIVE']:
             for arg in ('API_USERNAME','API_PASSWORD','API_SIGNATURE'):
                 if arg not in kwargs:
                     raise PayPalConfigError('Missing in PayPalConfig: %s ' % arg)
