@@ -28,6 +28,10 @@ class PayPalConfig(object):
         '3TOKEN': {
             'sandbox' : 'https://api-3t.sandbox.paypal.com/nvp',
             'production' : 'https://api-3t.paypal.com/nvp',
+        },
+        'ADAPTIVE': {
+            'sandbox': 'https://svcs.sandbox.paypal.com/AdaptivePayments/',
+            'production': 'https://svcs.paypal.com/AdaptivePayments/'
         }
     }
 
@@ -50,21 +54,21 @@ class PayPalConfig(object):
     # API Endpoints are just API server addresses.
     API_ENDPOINT = None
     PAYPAL_URL_BASE = None
-    
+
     # UNIPAY credentials
     UNIPAY_SUBJECT = None
-    
+
     ACK_SUCCESS = "SUCCESS"
     ACK_SUCCESS_WITH_WARNING = "SUCCESSWITHWARNING"
-    
+
     # 0 being no debugging, 1 being some, 2 being lots.
     DEBUG_LEVEL = 0
 
     # In seconds. Depending on your setup, this may need to be higher.
     HTTP_TIMEOUT = 15
-    
+
     RESPONSE_KEYERROR = "AttributeError"
-    
+
     # When True, return an AttributeError when the user tries to get an
     # attribute on the response that does not exist. If False or None,
     # return None for non-existant attribs.
@@ -75,7 +79,7 @@ class PayPalConfig(object):
         PayPalConfig constructor. **kwargs catches all of the user-specified
         config directives at time of instantiation. It is fine to set these
         values post-instantiation, too.
-        
+
         Some basic validation for a few values is performed below, and defaults
         are applied for certain directives in the absence of
         user-provided values.
@@ -93,18 +97,18 @@ class PayPalConfig(object):
         if kwargs['API_AUTHENTICATION_MODE'] not in self._valid_['API_AUTHENTICATION_MODE']:
             raise PayPalConfigError("Not a supported auth mode. Use one of: %s" % \
                            ", ".join(self._valid_['API_AUTHENTICATION_MODE']))
-        
+
         # Set the API endpoints, which is a cheesy way of saying API servers.
         self.API_ENDPOINT= self._API_ENDPOINTS[self.API_AUTHENTICATION_MODE][self.API_ENVIRONMENT]
-        self.PAYPAL_URL_BASE= self._PAYPAL_URL_BASE[self.API_ENVIRONMENT]        
-        
+        self.PAYPAL_URL_BASE= self._PAYPAL_URL_BASE[self.API_ENVIRONMENT]
+
         # set the 3TOKEN required fields
         if self.API_AUTHENTICATION_MODE == '3TOKEN':
             for arg in ('API_USERNAME','API_PASSWORD','API_SIGNATURE'):
                 if arg not in kwargs:
                     raise PayPalConfigError('Missing in PayPalConfig: %s ' % arg)
                 setattr(self, arg, kwargs[arg])
-                
+
         for arg in ('HTTP_TIMEOUT' , 'DEBUG_LEVEL' , 'RESPONSE_KEYERROR'):
             if arg in kwargs:
                 setattr(self, arg, kwargs[arg])
