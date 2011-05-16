@@ -51,6 +51,10 @@ class PayPalConfig(object):
     API_PASSWORD = None
     API_SIGNATURE = None
 
+    # Adaptive application credentials
+    APPLICATION_ID = ""
+    EMAIL = ""
+
     # API Endpoints are just API server addresses.
     API_ENDPOINT = None
     PAYPAL_URL_BASE = None
