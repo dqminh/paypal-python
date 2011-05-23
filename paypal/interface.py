@@ -417,6 +417,7 @@ class IpnInterface(object):
 
     def populate(self, data):
         self.data = data
+        return self
 
     def validate(self):
         """
@@ -438,13 +439,7 @@ class IpnInterface(object):
             self.error = 'PayPal response was "%s"' % raw_response
             return False
 
-        # payment status should be COMPLETED
-        status = self.data.get('status', None)
-        if status != 'COMPLETED':
-            self.error = 'PayPal status was "%s"' % status
-            return False
-
-        return self
+        return True
 
 
 class AdaptivePaypalInterface(PayPalInterface):
