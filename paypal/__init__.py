@@ -1,5 +1,10 @@
 # coding=utf-8
-from paypal.interface import PayPalInterface, AdaptivePaypalInterface
+__all__ = ["PayPalInterface", "AdaptivePaypalInterface", "IpnInterface",
+           "PayPalConfig", "PayPalError", "PayPalConfigError",
+           "PayPalAPIResponseError"]
+
+from paypal.interface import PayPalInterface, AdaptivePaypalInterface,\
+        IpnInterface
 from paypal.settings import PayPalConfig
 from paypal.exceptions import PayPalError, PayPalConfigError, PayPalAPIResponseError
 import paypal.countries

@@ -397,6 +397,56 @@ class PayPalInterface(object):
         return self._call('UpdateRecurringPaymentsProfile', **kwargs)
 
 
+class IpnInterface(object):
+    def __init__(self , config=None, **kwargs):
+        """
+        Constructor, which passes all config directives to the config class
+        via kwargs. For example:
+
+            paypal = PayPalInterface(API_USERNAME='somevalue')
+
+        Optionally, you may pass a 'config' kwarg to provide your own
+        PayPalConfig object.
+        """
+        if config:
+            # User provided their own PayPalConfig object.
+            self.config = config
+        else:
+            # Take the kwargs and stuff them in a new PayPalConfig object.
+            self.config = PayPalConfig(**kwargs)
+
+    def populate(self, data):
+        self.data = data
+
+    def validate(self):
+        """
+        Query Paypal for validity of the instance data
+        """
+        assert self.data
+        verify_request = urllib2.Request("%s?cmd=_notify_validate",
+                                         data=urllib.urlencode(self.data))
+        verify_response = urllib2.urlopen(verify_request)
+
+        # response status should be 200
+        if verify_response.code() != 200:
+            self.error = 'PayPal response code was %i' % verify_response.code()
+            return False
+
+        # response should be VERIFIED
+        raw_response = verify_response.content()
+        if raw_response != 'VERIFIED':
+            self.error = 'PayPal response was "%s"' % raw_response
+            return False
+
+        # payment status should be COMPLETED
+        status = self.data.get('status', None)
+        if status != 'COMPLETED':
+            self.error = 'PayPal status was "%s"' % status
+            return False
+
+        return self
+
+
 class AdaptivePaypalInterface(PayPalInterface):
     """
     Interface to Paypal Adaptive Payment.
